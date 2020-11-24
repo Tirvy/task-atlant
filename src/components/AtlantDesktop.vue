@@ -1,6 +1,14 @@
 <template>
-  <div class="atlant-desktop-container">
-    <atlant-window v-for="item in windows" :key="item.id" v-bind="item">
+  <div class="atlant-desktop-container" @mousemove="handleMouseMove">
+    <atlant-window
+      v-for="(item, index) in windows"
+      :key="item.id"
+      v-bind="item"
+      @close="closeWindow(index)"
+      @startResize="resizeWindow(index)"
+      @startMove="moveWindow(index)"
+      @mousedown="setToForeground(index)"
+    >
       Some content
     </atlant-window>
   </div>
@@ -18,12 +26,36 @@ export default {
     return {
       windows: [],
       lastId: 0,
+      isMoving: null,
+      isResizing: null,
     };
   },
   mounted() {
     this.windows = this.getInitialWindowsData();
   },
+  computed: {
+    currentForegroundLevel() {
+      let max = 0;
+      this.windows.forEach(item => {
+        if (item.level > max) {
+          max = item.level;
+        }
+      });
+      return max;
+    },
+  },
   methods: {
+    handleMouseMove(event) {
+      if (this.isMoving || this.isResizing) {
+        console.log(event);
+      }
+    },
+    setToForeground(index) {
+      const window = this.windows[index];
+      if (window.level < this.currentForegroundLevel) {
+        this.windows[index] = {...window, level: this.currentForegroundLevel + 1};
+      }
+    },
     getWorkspaceData() {
       const element = this.$el;
       return {

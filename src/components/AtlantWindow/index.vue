@@ -143,4 +143,10 @@ $resize-border-size: 4px;
     cursor: pointer;
   }
 }
+
+.content {
+  flex: 1 0;
+  overflow: auto;
+  background: #fff;
+}
 </style>

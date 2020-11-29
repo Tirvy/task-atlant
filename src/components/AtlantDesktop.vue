@@ -1,16 +1,26 @@
 <template>
   <div class="atlant-desktop-container" @mousemove="handleMouseMove($event)" @mouseup="handleMouseUp($event)">
-    <atlant-window
-      v-for="(item, index) in windows"
-      :key="item.id"
-      v-bind="item"
-      @close="closeWindow(index)"
-      @startResize="startResizeWindow(index, $event)"
-      @startMove="startMoveWindow(index, $event)"
-      @mousedown.native="setToForeground(index)"
-    >
-      Some content
-    </atlant-window>
+    <div class="windows-controls">
+      <div>
+        Restore windows:
+      </div>
+      <div v-for="window in absentWindows" :key="window.id" class="restore-button" @click="restoreWindow(window.id)">
+        {{ window.name }}
+      </div>
+    </div>
+    <div class="windows-container">
+      <atlant-window
+        v-for="(item, index) in windows"
+        :key="item.id"
+        v-bind="item"
+        @close="closeWindow(index)"
+        @startResize="startResizeWindow(index, $event)"
+        @startMove="startMoveWindow(index, $event)"
+        @mousedown.native="setToForeground(index)"
+      >
+        Some content
+      </atlant-window>
+    </div>
   </div>
 </template>
 
@@ -22,6 +32,9 @@ const minSize = {
   width: 200,
   height: 70,
 };
+const numberOfWindows = 5;
+const initialWidth = 300;
+const initialHeight = 100;
 
 export default {
   name: 'AtlantDesktop',
@@ -41,8 +54,36 @@ export default {
     currentForegroundLevel() {
       return Math.max(...this.windows.map(item => item.level)) || 0;
     },
+    absentWindows() {
+      const haveIds = this.windows.reduce((ret, {id}) => {
+        ret[id] = true;
+        return ret;
+      }, {});
+
+      let listOfIds = [];
+      for (let i = 0; i < numberOfWindows; ++i) listOfIds.push(i);
+
+      return listOfIds
+        .filter(id => !haveIds[id])
+        .map(id => {
+          return {id, name: `Window ${id + 1}`};
+        });
+    },
   },
   methods: {
+    restoreWindow(id) {
+      const workspaceData = this.getWorkspaceData();
+
+      this.windows.push({
+        id,
+        name: `Window ${id + 1}`,
+        level: this.currentForegroundLevel + 1,
+        width: initialWidth,
+        height: initialHeight,
+        x: this.toCellSize(workspaceData.width / 2 - initialWidth / 2),
+        y: this.toCellSize(workspaceData.height / 2 - initialHeight / 2),
+      });
+    },
     getMousePosition(event) {
       return {
         x: event.pageX,
@@ -110,7 +151,9 @@ export default {
         }
       }
     },
-    closeWindow() {},
+    closeWindow(index) {
+      this.windows.splice(index, 1);
+    },
     startResizeWindow(index, {direction, event}) {
       const windowItem = this.windows[index];
       this.isResizing = {
@@ -156,11 +199,9 @@ export default {
     },
     getInitialWindowsData() {
       const workspaceData = this.getWorkspaceData();
-      const initialWidth = 300;
-      const initialHeight = 100;
       const maxWindowsHorizontal = Math.floor((workspaceData.width - cellWidth) / (initialWidth + cellWidth));
       let ret = [];
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < numberOfWindows; i++) {
         ret.push({
           id: this.getNewWindowId(),
           name: `Window ${i + 1}`,
@@ -180,8 +221,42 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .atlant-desktop-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.windows-container {
   position: relative;
+}
+
+.windows-controls {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 40px;
+}
+
+$dark-color: #2c3e50;
+$light-color: #5566ff;
+
+.restore-button {
+  border: 1px solid $light-color;
+  border-radius: 4px;
+  color: $dark-color;
+  background-color: #fff;
+  cursor: pointer;
+  padding: 4px 8px;
+
+  &:hover {
+    border-color: $dark-color;
+  }
+
+  &:active {
+    background-color: $dark-color;
+    color: #fff;
+  }
 }
 </style>

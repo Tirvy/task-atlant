@@ -48,7 +48,10 @@ export default {
     };
   },
   mounted() {
-    this.windows = this.getInitialWindowsData();
+    this.loadWindowsData();
+    if (!this.windows.length) {
+      this.windows = this.getInitialWindowsData();
+    }
   },
   computed: {
     currentForegroundLevel() {
@@ -71,6 +74,18 @@ export default {
     },
   },
   methods: {
+    cacheWindowsData() {
+      localStorage.setItem('windows', JSON.stringify(this.windows));
+    },
+    loadWindowsData() {
+      const storageData = localStorage.getItem('windows');
+      if (storageData && storageData !== 'undefined') {
+        const windowsParsed = JSON.parse(storageData);
+        if (windowsParsed) {
+          this.windows = windowsParsed;
+        }
+      }
+    },
     restoreWindow(id) {
       const workspaceData = this.getWorkspaceData();
 
@@ -94,8 +109,11 @@ export default {
       return Math.round(number / cellWidth) * cellWidth;
     },
     handleMouseUp() {
-      this.isResizing = null;
-      this.isMoving = null;
+      if (this.isResizing || this.isMoving) {
+        this.cacheWindowsData();
+        this.isResizing = null;
+        this.isMoving = null;
+      }
     },
     handleResize(difference) {
       const windowData = this.windows[this.isResizing.windowIndex];
@@ -153,6 +171,7 @@ export default {
     },
     closeWindow(index) {
       this.windows.splice(index, 1);
+      this.cacheWindowsData();
     },
     startResizeWindow(index, {direction, event}) {
       const windowItem = this.windows[index];
@@ -188,6 +207,7 @@ export default {
       if (window.level < this.currentForegroundLevel) {
         this.$set(this.windows, index, {...window, level: this.currentForegroundLevel + 1});
       }
+      this.cacheWindowsData();
     },
     getWorkspaceData() {
       const element = this.$el;

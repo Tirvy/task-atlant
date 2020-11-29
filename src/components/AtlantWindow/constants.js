@@ -4,43 +4,43 @@ export const edgeVisualWidth = 4;
 let edgeDirectionsSource = [
   {
     name: 'ns',
+    v: -1,
+    h: 0,
+  },
+  {
+    name: 'nesw',
+    v: -1,
+    h: 1,
+  },
+  {
+    name: 'ew',
     v: 0,
     h: 1,
   },
   {
-    name: 'nesw',
-    v: 0,
-    h: 2,
-  },
-  {
-    name: 'ew',
-    v: 1,
-    h: 2,
-  },
-  {
     name: 'nwse',
-    v: 2,
-    h: 2,
+    v: 1,
+    h: 1,
   },
   {
     name: 'ns',
-    v: 2,
-    h: 1,
-  },
-  {
-    name: 'nesw',
-    v: 2,
-    h: 0,
-  },
-  {
-    name: 'ew',
     v: 1,
     h: 0,
   },
   {
-    name: 'nwse',
+    name: 'nesw',
+    v: 1,
+    h: -1,
+  },
+  {
+    name: 'ew',
     v: 0,
-    h: 0,
+    h: -1,
+  },
+  {
+    name: 'nwse',
+    v: -1,
+    h: -1,
   },
 ];
 
@@ -51,14 +51,15 @@ const edgeOffsets = [
 ];
 const edgeWidths = [edgeTrueWidth + 'px', `calc(100% - ${edgeVisualWidth * 2}px)`];
 export const edgeDirections = edgeDirectionsSource.map(item => {
-  const isHorizontal = item.h === 1;
-  const isVertical = item.v === 1;
+  const isHorizontal = item.h === 0;
+  const isVertical = item.v === 0;
   return {
     cursor: `${item.name}-resize`,
     name: item.name,
     width: edgeWidths[+isHorizontal],
     height: edgeWidths[+isVertical],
-    left: edgeOffsets[item.h],
-    top: edgeOffsets[item.v],
+    left: edgeOffsets[item.h + 1],
+    top: edgeOffsets[item.v + 1],
+    direction: item,
   };
 });

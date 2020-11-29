@@ -12,8 +12,8 @@
       </template>
     </div>
     <div class="not-resizing-border">
-      <div class="header-bar" @click.self="startMove($event)">
-        <div class="header-bar__name" @click.self="startMove($event)">
+      <div class="header-bar" @mousedown.self="startMove($event)">
+        <div class="header-bar__name" @mousedown.self="startMove($event)">
           {{ name }}
         </div>
         <div class="control-buttons">
@@ -62,7 +62,7 @@ export default {
     edges() {
       return edgeDirections.map(edge => {
         return {
-          direction: edge.name,
+          direction: edge.direction,
           style: {
             ...edge,
           },
@@ -90,7 +90,6 @@ $resize-border-size: 4px;
 
 .atlant-window-container {
   position: absolute;
-  transition: width, height 0.5s;
 }
 
 .resizing-border {
@@ -98,6 +97,7 @@ $resize-border-size: 4px;
   height: 100%;
   background-color: #56f;
   position: relative;
+  user-select: none;
 
   &__edge {
     position: absolute;

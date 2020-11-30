@@ -125,7 +125,6 @@ export default {
     },
     handleWebsocketOpen() {
       this.status = statuses.stopped;
-      console.log('websocket connected');
       this.sendWebsocketMessage({op: 'ping'});
     },
     handleWebsocketClose() {

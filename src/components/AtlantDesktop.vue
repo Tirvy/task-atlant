@@ -4,7 +4,7 @@
       <div>
         Restore windows:
       </div>
-      <div v-for="window in absentWindows" :key="window.id" class="restore-button" @click="restoreWindow(window.id)">
+      <div v-for="window in absentWindows" :key="window.id" class="button" @click="restoreWindow(window.id)">
         {{ window.name }}
       </div>
     </div>
@@ -258,25 +258,6 @@ export default {
   align-items: center;
   height: 40px;
 }
-
-$dark-color: #2c3e50;
-$light-color: #5566ff;
-
-.restore-button {
-  border: 1px solid $light-color;
-  border-radius: 4px;
-  color: $dark-color;
-  background-color: #fff;
-  cursor: pointer;
-  padding: 4px 8px;
-
-  &:hover {
-    border-color: $dark-color;
-  }
-
-  &:active {
-    background-color: $dark-color;
-    color: #fff;
-  }
-}
 </style>
+
+<style scoped lang="scss" src="@/styles/buttons.scss"></style>

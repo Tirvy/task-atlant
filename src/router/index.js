@@ -13,12 +13,12 @@ const routes = [
   {
     path: '/desktop',
     name: 'Desktop',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Desktop.vue'),
+    component: () => import(/* webpackChunkName: "desktop" */ '../views/Desktop.vue'),
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    path: '/websockets',
+    name: 'Websockets',
+    component: () => import(/* webpackChunkName: "websockets" */ '../views/Websockets.vue'),
   },
 ];
 

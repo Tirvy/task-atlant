@@ -1,0 +1,27 @@
+$dark-color: #2c3e50;
+$light-color: #5566ff;
+
+.button {
+  border: 1px solid $light-color;
+  border-radius: 4px;
+  color: $dark-color;
+  background-color: #fff;
+  cursor: pointer;
+  padding: 4px 8px;
+
+  &:hover {
+    border-color: $dark-color;
+  }
+
+  &:active {
+    background-color: $dark-color;
+    color: #fff;
+  }
+
+  &.disabled {
+    background-color: #cfcfcf;
+    cursor: default;
+    color: #fff;
+    border-color: #fff;
+  }
+}
